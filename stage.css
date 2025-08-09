@@ -1,0 +1,29 @@
+html, body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: black;
+  color: white;
+  overflow: hidden;
+}
+
+#verse-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+  overflow: hidden;
+}
+
+#slide-content {
+  white-space: pre;          /* Preserves exact line breaks, no wrapping */
+  font-weight: bold;
+  line-height: 1.2;
+  display: inline-block;
+  overflow: visible;         /* Allow overflow to measure properly */
+  padding: 0;
+  margin: 0;
+}
