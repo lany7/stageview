@@ -54,8 +54,8 @@ function collapseIdenticalSlides(slideArr) {
     const curr = slideArr[i];
     const currHtml = curr.html || "";
     if (prev && (currHtml === prev.html)) {
-      if (result.length === 0 || !result[result.length - 1].startsWith("://")) {
-        result[result.length - 1] = `:// ${currHtml} //:`;
+      if (result.length === 0 || !result[result.length - 1].startsWith("//:")) {
+        result[result.length - 1] = `//: ${currHtml} ://`;
       }
     } else {
       result.push(currHtml);
@@ -66,8 +66,16 @@ function collapseIdenticalSlides(slideArr) {
 }
 
 async function updateContent(slide) {
-  console.log("updateContent called with:", slide); // <-- Add this line
+  console.log("updateContent called with:", slide);
   const slideContent = document.getElementById("slide-content");
+  const stageTitle = document.getElementById("stage-title");
+
+  // Only show title if slide.name contains "song" (case-insensitive)
+  if (slide.name && slide.name.toLowerCase().includes("song")) {
+    stageTitle.textContent = slide.title || "";
+  } else {
+    stageTitle.textContent = "";
+  }
 
   // Always clear if blank/theme is set (from websocket)
   if (slide._blank === true || slide._theme === true) {
@@ -129,26 +137,26 @@ function fetchLiveSlideText() {
     .then(res => res.json())
     .then(data => {
       const slides = data.slides || [];
+      const topLevelName = data.name || "";
+
       if (!slides.length) {
-        updateContent({ text: "(no slides)" });
-        return;
+        updateContent({ text: "(no slides)", title: "", name: topLevelName });
       }
 
       const selected = slides.find(s => s.selected);
       if (!selected) {
-        updateContent({ text: "(no content)" });
+        updateContent({ text: "(no content)", title: "", name: topLevelName });
         return;
       }
 
       if (selected.img) {
-        updateContent(selected);
+        updateContent({ ...selected, title: selected.title || "", name: topLevelName });
         return;
       }
 
       if (selected.tag) {
         const tag = selected.tag;
 
-        // Only show both verse and chorus if enabled
         if (SHOW_VERSE_AND_CHORUS) {
 
           // If the selected is a verse (e.g., V1), also find the next refrain (e.g., R1)
@@ -188,10 +196,10 @@ function fetchLiveSlideText() {
             }
 
             if (chorusHtml) {
-              updateContent({ html: verseHtml + "<br>" + chorusHtml });
+              updateContent({ html: verseHtml + "<br>" + chorusHtml, title: selected.title || "", name: topLevelName }); 
               return;
             } else {
-              updateContent({ html: verseHtml });
+              updateContent({ html: verseHtml, title: selected.title || "", name: topLevelName });
               return;
             }
           }
@@ -239,26 +247,26 @@ function fetchLiveSlideText() {
             }
 
             if (verseHtml) {
-              updateContent({ html: verseHtml + "<br>" + chorusHtml });
+              updateContent({ html: verseHtml + "<br>" + chorusHtml, title: selected.title || "", name: topLevelName });
               return;
             } else {
-              updateContent({ html: chorusHtml });
+              updateContent({ html: chorusHtml, title: selected.title || "", name: topLevelName });
               return;
             }
           }
           // Default: group by tag
           const tagSlides = slides.filter(s => s.tag === tag);
           const verseHtml = collapseIdenticalSlides(tagSlides).join("<br>");
-          updateContent({ html: verseHtml });
+          updateContent({ html: verseHtml, title: selected.title || "", name: topLevelName });
           return;
         }
       }
 
-      updateContent(selected);
+      updateContent({ ...selected, title: selected.title || "", name: topLevelName });
     })
     .catch(err => {
       console.error("❌ Fetch failed:", err);
-      updateContent({ text: "(error fetching live verse)" });
+      updateContent({ text: "(error fetching live verse)", title: "" });
     });
 }
 
