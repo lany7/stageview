@@ -319,3 +319,26 @@ socket.onerror = (err) => {
 socket.onclose = (evt) => {
   console.warn("WebSocket closed:", evt);
 };
+
+const fullscreenBtn = document.getElementById("fullscreen-btn");
+
+document.addEventListener("fullscreenchange", function() {
+  if (document.fullscreenElement) {
+    fullscreenBtn.style.display = "none";
+  } else {
+    fullscreenBtn.style.display = "";
+  }
+});
+
+document.getElementById("fullscreen-btn").onclick = function() {
+  const elem = document.documentElement;
+  if (!document.fullscreenElement) {
+    if (elem.requestFullscreen) elem.requestFullscreen();
+    else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+    else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    else if (document.msExitFullscreen) document.msExitFullscreen();
+  }
+};

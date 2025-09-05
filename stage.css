@@ -40,3 +40,15 @@ html, body {
   z-index: 100;
   pointer-events: none;
 }
+
+#fullscreen-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  font-size: 2em;
+  border-radius: 0.3em;
+  cursor: pointer;
+  z-index: 101;
+  transition: background 0.2s;
+}
