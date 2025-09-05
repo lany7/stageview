@@ -69,12 +69,17 @@ async function updateContent(slide) {
   console.log("updateContent called with:", slide);
   const slideContent = document.getElementById("slide-content");
   const stageTitle = document.getElementById("stage-title");
+  const verseText = document.getElementById("verse-text");
 
   // Only show title if slide.name contains "song" (case-insensitive)
   if (slide.name && slide.name.toLowerCase().includes("song")) {
     stageTitle.textContent = slide.title || "";
+    verseText.style.justifyContent = "center";
+    verseText.style.textAlign = "center";
   } else {
     stageTitle.textContent = "";
+    verseText.style.justifyContent = "flex-start";
+    verseText.style.textAlign = "left";
   }
 
   // Always clear if blank/theme is set (from websocket)
