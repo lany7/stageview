@@ -347,3 +347,26 @@ document.getElementById("fullscreen-btn").onclick = function() {
     else if (document.msExitFullscreen) document.msExitFullscreen();
   }
 };
+
+let cursorTimeout = null;
+function hideCursorAfterDelay() {
+  if (!document.fullscreenElement) {
+    document.body.style.cursor = "";
+    return;
+  }
+  clearTimeout(cursorTimeout);
+  document.body.style.cursor = "";
+  cursorTimeout = setTimeout(() => {
+    if (document.fullscreenElement) {
+      document.body.style.cursor = "none";
+    }
+  }, 5000); // 5 seconds of inactivity
+}
+
+document.addEventListener("mousemove", hideCursorAfterDelay);
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement) {
+    document.body.style.cursor = "";
+    clearTimeout(cursorTimeout);
+  }
+});
